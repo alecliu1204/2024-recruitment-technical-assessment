@@ -52,14 +52,14 @@ function kLargestCategories(files, k) {
             }
         }
     }
-    // if categories have same count, sort them lexicographically
+    // sort categories
     categoriesArray.sort((a,b) => {
         // if count is not the same 
         if (b.count !== a.count) {
             // sort by count in descending order
             return (b.count - a.count);
         }
-        // if counts are the same
+        // if counts are the same, sort them lexicographically
         else {
             return (a.name.localeCompare(b.name));
         }
@@ -104,7 +104,6 @@ function largestFileSize(files) {
     for (const file of files) {
         // calculate the total size of the current file plus its children, grandchildren etc.
         let totalSize = calculateSize(file);
-        // console.log(`size of ${file.name} is ${totalSize}`)
         // if totalSize > largestSize, update largestSize
         if (totalSize > largestSize) {
             largestSize = totalSize
@@ -142,6 +141,11 @@ const testFiles = [
     // { id: 300, name: "Big file", categories: [], parent: 233, size: 9999999},
 ];
 
+
+
+
+
+
 console.assert(arraysEqual(
     leafFiles(testFiles).sort((a, b) => a.localeCompare(b)),
     [
@@ -167,3 +171,122 @@ console.assert(largestFileSize(testFiles) == 20992)
 // ==================================================================================================
 // FURTHER TESTING 
 
+const task1test1 = [
+    {id: 1, name: "a", categories: [], parent: -1, size: 1},
+    {id: 2, name: "b", categories: [], parent: -1, size: 1},
+    {id: 3, name: "c", categories: [], parent: -1, size: 1},
+    {id: 4, name: "d", categories: [], parent: -1, size: 1},
+    {id: 5, name: "e", categories: [], parent: -1, size: 1},
+
+];
+// task1test1 - if all files are leaves 
+console.assert(arraysEqual(
+    leafFiles(task1test1).sort((a, b) => a.localeCompare(b)),
+    [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+    ]
+));
+
+const task1test2 = [
+    {id: 1, name: "a", categories: [], parent: 5, size: 1},
+    {id: 2, name: "b", categories: [], parent: 4, size: 1},
+    {id: 3, name: "c", categories: [], parent: 3, size: 1},
+    {id: 4, name: "d", categories: [], parent: 2, size: 1},
+    {id: 5, name: "e", categories: [], parent: 1, size: 1},
+
+];
+
+// task1test2 - no files are leaves (hypothetically)
+console.assert(arraysEqual(
+    leafFiles(task1test2).sort((a, b) => a.localeCompare(b)),
+    []
+));
+
+
+const task2test1 = [
+    {id: 1, name: "a", categories: ["a"], parent: 5, size: 1},
+    {id: 2, name: "b", categories: ["b"], parent: 4, size: 1},
+    {id: 3, name: "c", categories: ["c"], parent: 3, size: 1},
+    {id: 4, name: "d", categories: ["d"], parent: 2, size: 1},
+    {id: 5, name: "e", categories: ["e"], parent: 1, size: 1},
+
+];
+
+// task2test1 - all categories have same size, k = no. of categories
+console.assert(arraysEqual(
+    kLargestCategories(task2test1, 5),
+    ["a", "b", "c", "d", "e"]
+));
+
+// task2test2 - all categories have same size, k < no. of categories
+console.assert(arraysEqual(
+    kLargestCategories(task2test1, 3),
+    ["a", "b", "c"]
+));
+
+// task2test3 - all categories have same size. k = 0 
+console.assert(arraysEqual(
+    kLargestCategories(task2test1, 0),
+    []
+));
+const task2test2 = [
+    {id: 1, name: "a", categories: ["a"], parent: 5, size: 1},
+    {id: 2, name: "b", categories: ["b"], parent: 4, size: 1},
+    {id: 3, name: "c", categories: ["c"], parent: 3, size: 1},
+    {id: 4, name: "d", categories: ["d"], parent: 2, size: 1},
+    {id: 4, name: "d", categories: ["d"], parent: 2, size: 1},
+    {id: 5, name: "e", categories: ["e"], parent: 1, size: 1},
+    {id: 6, name: "f", categories: ["e"], parent: 1, size: 1},
+    {id: 7, name: "g", categories: ["e"], parent: 1, size: 1}
+
+];
+// task2test4 - largest cat has latest letter. smallest cat has earliest letter. k = no. of categories  
+console.assert(arraysEqual(
+    kLargestCategories(task2test2, 7),
+    ["e","d", "a", "b", "c"]
+));
+
+// task3test1. general test
+const task3test1 = [
+    { id: 1, name: "a.txt", categories: ["categoryA"], parent: -1, size: 100 },
+    { id: 2, name: "b.txt", categories: ["categoryA"], parent: 1, size: 50 },
+    { id: 3, name: "c.txt", categories: ["categoryA"], parent: -1, size: 75 },
+    { id: 4, name: "d.txt", categories: ["categoryA"], parent: 1, size: 80 }
+];
+
+console.assert(largestFileSize(task3test1) === 230);
+
+// task3test2. test with just 1 object
+const task3test2 = [
+    { id: 1, name: "a.txt", categories: ["categoryA"], parent: -1, size: 100 }
+];
+console.assert(largestFileSize(task3test2) === 100);
+
+// task3test3. long chain of parents
+const task3test3 = [
+    { id: 1, name: "a.txt", categories: ["categoryA"], parent: -1, size: 100 },
+    { id: 2, name: "b.txt", categories: ["categoryA"], parent: 1, size: 50 },
+    { id: 3, name: "c.txt", categories: ["categoryA"], parent: 2, size: 75 },
+    { id: 4, name: "d.txt", categories: ["categoryA"], parent: 3, size: 80 }
+];
+
+console.assert(largestFileSize(task3test3) === 305);
+
+// task3test4. numerous children per parent
+const task3test4 = [
+    { id: 1, name: "a.txt", categories: ["categoryA"], parent: -1, size: 100 },
+    { id: 2, name: "b.txt", categories: ["categoryA"], parent: 1, size: 50 },
+    { id: 3, name: "c.txt", categories: ["categoryA"], parent: 1, size: 75 },
+    { id: 4, name: "d.txt", categories: ["categoryA"], parent: 2, size: 80 },
+    { id: 5, name: "e.txt", categories: ["categoryA"], parent: 2, size: 80 }
+];
+
+console.assert(largestFileSize(task3test4) === 385);
+
+// task3test5. empty files 
+const task3test5 = [];
+console.assert(largestFileSize(task3test5) === 0);
