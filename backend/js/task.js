@@ -13,6 +13,7 @@ function leafFiles(files) {
         for (let j = 0; j < files.length; j++) {
             // if file is parent of any other file
             if (files[i].id === files[j].parent) {
+                //set isLeaf to false and exit for loop
                 isLeaf = false;
                 break;
             }
@@ -22,6 +23,7 @@ function leafFiles(files) {
             leafFileNames.push(files[i].name)
         }
     }
+    // return array of strings containing leaf files
     return leafFileNames;
 }
 
@@ -93,11 +95,11 @@ function largestFileSize(files) {
         for (let i = 0; i < files.length; i++) {
             // if file is parent to another file
             if (file.id === files[i].parent) {
-                // add size of child files 
+                // add size of child files recursively
                 totalSize += calculateSize(files[i])
             }
         }
-
+        // return size of file + all child files
         return totalSize
     }
     // iterate through each file to find the largest total size
@@ -109,6 +111,7 @@ function largestFileSize(files) {
             largestSize = totalSize
         }
     }
+    // return int largestSize
     return largestSize
 }
 
@@ -245,8 +248,13 @@ const task2test2 = [
 ];
 // task2test4 - largest cat has latest letter. smallest cat has earliest letter. k = no. of categories  
 console.assert(arraysEqual(
-    kLargestCategories(task2test2, 7),
+    kLargestCategories(task2test2, 5),
     ["e","d", "a", "b", "c"]
+));
+// task2test4 - largest cat has latest letter. smallest cat has earliest letter. k < no. of categories  
+console.assert(arraysEqual(
+    kLargestCategories(task2test2, 4),
+    ["e","d", "a", "b"]
 ));
 
 // task3test1. general test
