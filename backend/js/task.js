@@ -109,7 +109,6 @@ function largestFileSize(files) {
             largestSize = totalSize
         }
     }
-    // console.log(largestSize)
     return largestSize
 }
 
